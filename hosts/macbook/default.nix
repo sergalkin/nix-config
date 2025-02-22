@@ -7,13 +7,7 @@
 }: {
   environment.systemPackages = with pkgs; [
     neofetch
-    alacritty
     mkalias
-    obsidian
-    karabiner-elements
-    vscode
-    aerospace
-    iterm2
   ];
 
   # Add nix-homebrew configuration
@@ -25,6 +19,10 @@
 
   # Nixpkgs configuration
   nixpkgs = {
+    overlays = [
+      outputs.overlays.stable-packages
+    ];
+
     config = {
       allowUnfree = true;
       input-fonts.acceptLicense = true;
@@ -113,9 +111,11 @@
         show-process-indicators = false;
         largesize = 50;
         persistent-apps = [
+          "/System/Applications/Launchpad.app"
           "${pkgs.alacritty}/Applications/Alacritty.app"
           "/System/Applications/Calendar.app"
           "/System/Applications/Mail.app"
+          "/System/Applications/System Settings.app"
         ];
         persistent-others = [];
       };
@@ -149,17 +149,18 @@
     enable = true;
     taps = [
       "shivammathur/php"
+      "FelixKratz/formulae"
     ];
+    masApps = {
+      "Unzip" = 1537056818;
+      "Hiddify" = 6596777532;
+      "Yoink" = 457622435;
+    };
     brews = [
-      # git нужно будет переставить потом через home TODO
-      "git" 
+     # "git"
       "mas"
-      "glances"
       "composer"
-      "go"
-      "golang-migrate"
-      "golangci-lint"
-      "wrk"
+      "borders"
       "shivammathur/php/php@7.4"
       "php@8.1"
       "php@8.2"
@@ -167,10 +168,9 @@
       "php@8.4"
     ];
     casks = [
-      "iina"
-      "font-fira-code"
-      "font-monaspace"
       "leader-key"
+      "orbstack"
+      "insomnia"
       #"raycast"
     ];
     onActivation = {
@@ -183,22 +183,23 @@
   # Used for backwards compatibility, please read the changelog before changing.
   system.stateVersion = 6;
 
-  system.activationScripts.applications.text = let
-    env = pkgs.buildEnv {
-      name = "system-applications";
-      paths = config.environment.systemPackages;
-      pathsToLink = "/Applications";
-    };
-  in
-    pkgs.lib.mkForce ''
-      echo "setting up /Applications..." >&2
-      rm -rf /Applications/Nix\ Apps
-      mkdir -p /Applications/Nix\ Apps
-      find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
-      while read -r src; do
-        app_name=$(basename "$src")
-        echo "copying $src" >&2
-        ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
-      done
-    '';
+  #system.activationScripts.applications.text = let
+  #  env = pkgs.buildEnv {
+  #    name = "system-applications";
+  #    paths = config.environment.systemPackages;
+  #    pathsToLink = "/Applications";
+  #  };
+  #in
+  #  pkgs.lib.mkForce ''
+  #    echo "setting up /Applications..." >&2
+  #    rm -rf /Applications/Nix\ Apps
+  #    mkdir -p /Applications/Nix\ Apps
+  #    find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
+  #    while read -r src; do
+  #      app_name=$(basename "$src")
+  #      echo "copying $src" >&2
+  #      ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
+  #    done
+  #  '';
+
 }

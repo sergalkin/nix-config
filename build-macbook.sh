@@ -19,7 +19,7 @@ fi
 # Шаг 2: Сборка пользовательской конфигурации Home Manager
 # Применяет home/home.nix для пользователя Siv
 echo "Сборка пользовательской конфигурации Home Manager..."
-home-manager switch --flake .#ser
+home-manager switch --flake .#siv@macbook
 
 # Проверка успешности выполнения
 if [ $? -eq 0 ]; then
